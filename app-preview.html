@@ -1,0 +1,374 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Smart Home Dashboard Preview</title>
+  <style>
+    body {
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      margin: 0;
+      padding: 20px;
+      background-color: #f5f5f5;
+      color: #333;
+    }
+    h1, h2, h3 {
+      color: #5527B0;
+    }
+    .container {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 20px;
+      background-color: white;
+      border-radius: 8px;
+      box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+    }
+    .card {
+      border: 1px solid #ddd;
+      border-radius: 8px;
+      padding: 15px;
+      margin-bottom: 20px;
+      background-color: white;
+    }
+    .device {
+      display: flex;
+      align-items: center;
+      padding: 10px;
+      border-bottom: 1px solid #eee;
+    }
+    .device-icon {
+      width: 40px;
+      height: 40px;
+      border-radius: 50%;
+      background-color: #5527B0;
+      color: white;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin-right: 15px;
+      font-size: 18px;
+    }
+    .device-info {
+      flex: 1;
+    }
+    .status {
+      display: inline-block;
+      width: 10px;
+      height: 10px;
+      border-radius: 50%;
+      margin-right: 5px;
+    }
+    .status-on {
+      background-color: #4CAF50;
+    }
+    .status-off {
+      background-color: #F44336;
+    }
+    #loading {
+      text-align: center;
+      padding: 20px;
+      font-style: italic;
+      color: #666;
+    }
+    .tabs {
+      display: flex;
+      margin-bottom: 20px;
+      border-bottom: 1px solid #ddd;
+    }
+    .tab {
+      padding: 10px 20px;
+      cursor: pointer;
+      border-bottom: 2px solid transparent;
+    }
+    .tab.active {
+      border-bottom: 2px solid #5527B0;
+      color: #5527B0;
+      font-weight: bold;
+    }
+    .tab-content {
+      display: none;
+    }
+    .tab-content.active {
+      display: block;
+    }
+    .achievement {
+      display: flex;
+      align-items: center;
+      margin-bottom: 15px;
+      padding: 10px;
+      border-radius: 8px;
+      background-color: #f9f9f9;
+    }
+    .achievement-icon {
+      width: 40px;
+      height: 40px;
+      border-radius: 50%;
+      background-color: #5527B0;
+      color: white;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin-right: 15px;
+      font-size: 18px;
+    }
+    .achievement-info {
+      flex: 1;
+    }
+    .progress-bar {
+      height: 8px;
+      background-color: #e0e0e0;
+      border-radius: 4px;
+      margin-top: 5px;
+      overflow: hidden;
+    }
+    .progress {
+      height: 100%;
+      background-color: #5527B0;
+      width: 0%;
+    }
+    .room-section {
+      margin-bottom: 30px;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1>Smart Home Dashboard</h1>
+    
+    <div class="tabs">
+      <div class="tab active" onclick="showTab('dashboard')">Dashboard</div>
+      <div class="tab" onclick="showTab('devices')">Devices</div>
+      <div class="tab" onclick="showTab('rooms')">Rooms</div>
+      <div class="tab" onclick="showTab('gamification')">Gamification</div>
+    </div>
+    
+    <!-- Dashboard Tab -->
+    <div id="dashboard" class="tab-content active">
+      <h2>Welcome, <span id="user-name">User</span>!</h2>
+      
+      <div class="card">
+        <h3>Active Devices</h3>
+        <div id="active-devices">Loading...</div>
+      </div>
+      
+      <div class="card">
+        <h3>Energy Usage Overview</h3>
+        <p>Current total energy consumption: <span id="energy-usage">Calculating...</span> watts</p>
+      </div>
+    </div>
+    
+    <!-- Devices Tab -->
+    <div id="devices" class="tab-content">
+      <h2>All Devices</h2>
+      <div id="device-list">Loading devices...</div>
+    </div>
+    
+    <!-- Rooms Tab -->
+    <div id="rooms" class="tab-content">
+      <h2>Rooms</h2>
+      <div id="room-list">Loading rooms...</div>
+    </div>
+    
+    <!-- Gamification Tab -->
+    <div id="gamification" class="tab-content">
+      <h2>Your Achievements & Challenges</h2>
+      
+      <div class="card">
+        <h3>Level Progress</h3>
+        <p>Current Level: <span id="user-level">1</span></p>
+        <p>Points: <span id="user-points">0</span></p>
+        <div class="progress-bar">
+          <div id="level-progress" class="progress" style="width: 35%"></div>
+        </div>
+      </div>
+      
+      <div class="card">
+        <h3>Achievements</h3>
+        <div id="achievements-list">
+          <div class="achievement">
+            <div class="achievement-icon">🔌</div>
+            <div class="achievement-info">
+              <h4>Energy Apprentice</h4>
+              <p>Save 100 watt-hours of energy by turning off lights when not in use</p>
+              <div class="progress-bar">
+                <div class="progress" style="width: 25%"></div>
+              </div>
+              <small>25/100 watt-hours saved</small>
+            </div>
+          </div>
+          <div class="achievement">
+            <div class="achievement-icon">⚡</div>
+            <div class="achievement-info">
+              <h4>Rule Creator</h4>
+              <p>Create your first automation rule</p>
+              <div class="progress-bar">
+                <div class="progress" style="width: 0%"></div>
+              </div>
+              <small>0/1 rules created</small>
+            </div>
+          </div>
+        </div>
+      </div>
+      
+      <div class="card">
+        <h3>Active Challenges</h3>
+        <div id="challenges-list">
+          <div class="achievement">
+            <div class="achievement-icon">🍃</div>
+            <div class="achievement-info">
+              <h4>Energy Saving Day</h4>
+              <p>Reduce energy consumption by 10% today</p>
+              <div class="progress-bar">
+                <div class="progress" style="width: 30%"></div>
+              </div>
+              <small>3% of 10% reduction achieved</small>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    // Show the selected tab
+    function showTab(tabId) {
+      document.querySelectorAll('.tab').forEach(tab => tab.classList.remove('active'));
+      document.querySelectorAll('.tab-content').forEach(content => content.classList.remove('active'));
+      
+      document.querySelector(`.tab[onclick="showTab('${tabId}')"]`).classList.add('active');
+      document.getElementById(tabId).classList.add('active');
+    }
+
+    // Fetch data from API
+    async function fetchData() {
+      try {
+        // Fetch user data
+        const userData = await fetch('/api/users').then(res => res.json());
+        if (userData && userData[0]) {
+          document.getElementById('user-name').textContent = userData[0].name;
+          document.getElementById('user-level').textContent = userData[0].level;
+          document.getElementById('user-points').textContent = userData[0].points;
+          document.getElementById('level-progress').style.width = `${(userData[0].points % 100) / 100 * 100}%`;
+        }
+        
+        // Fetch devices
+        const devices = await fetch('/api/devices').then(res => res.json());
+        displayDevices(devices);
+        
+        // Fetch rooms
+        const rooms = await fetch('/api/rooms').then(res => res.json());
+        displayRooms(rooms, devices);
+        
+        // Calculate active devices
+        const activeDevices = devices.filter(device => device.status);
+        document.getElementById('active-devices').textContent = `${activeDevices.length} of ${devices.length} devices are currently active`;
+        
+        // Calculate total energy usage (estimating based on device status)
+        let totalEnergy = activeDevices.reduce((total, device) => {
+          if (device.type === 'light') {
+            return total + (device.brightness / 100 * 10); // Assuming 10W per light at 100% brightness
+          } else if (device.type === 'fan') {
+            return total + (device.speed / 100 * 50); // Assuming 50W per fan at 100% speed
+          }
+          return total;
+        }, 0);
+        
+        document.getElementById('energy-usage').textContent = `${totalEnergy.toFixed(1)}`;
+        
+      } catch (error) {
+        console.error('Error fetching data:', error);
+      }
+    }
+    
+    // Display devices in the device list
+    function displayDevices(devices) {
+      const deviceListElement = document.getElementById('device-list');
+      
+      if (!devices || devices.length === 0) {
+        deviceListElement.innerHTML = '<p>No devices found</p>';
+        return;
+      }
+      
+      let html = '';
+      
+      devices.forEach(device => {
+        const statusClass = device.status ? 'status-on' : 'status-off';
+        const icon = device.type === 'light' ? '💡' : '🌀';
+        
+        html += `
+          <div class="device">
+            <div class="device-icon">${icon}</div>
+            <div class="device-info">
+              <h4>${device.name}</h4>
+              <p>
+                <span class="status ${statusClass}"></span>
+                ${device.status ? 'ON' : 'OFF'} 
+                ${device.type === 'light' ? `· Brightness: ${device.brightness}%` : ''}
+                ${device.type === 'fan' ? `· Speed: ${device.speed}%` : ''}
+              </p>
+            </div>
+          </div>
+        `;
+      });
+      
+      deviceListElement.innerHTML = html;
+    }
+    
+    // Display rooms with their devices
+    function displayRooms(rooms, devices) {
+      const roomListElement = document.getElementById('room-list');
+      
+      if (!rooms || rooms.length === 0) {
+        roomListElement.innerHTML = '<p>No rooms found</p>';
+        return;
+      }
+      
+      let html = '';
+      
+      rooms.forEach(room => {
+        const roomDevices = devices.filter(device => device.roomId === room.id);
+        
+        html += `
+          <div class="room-section">
+            <h3>${room.name}</h3>
+            <div class="card">
+        `;
+        
+        if (roomDevices.length === 0) {
+          html += '<p>No devices in this room</p>';
+        } else {
+          roomDevices.forEach(device => {
+            const statusClass = device.status ? 'status-on' : 'status-off';
+            const icon = device.type === 'light' ? '💡' : '🌀';
+            
+            html += `
+              <div class="device">
+                <div class="device-icon">${icon}</div>
+                <div class="device-info">
+                  <h4>${device.name}</h4>
+                  <p>
+                    <span class="status ${statusClass}"></span>
+                    ${device.status ? 'ON' : 'OFF'} 
+                    ${device.type === 'light' ? `· Brightness: ${device.brightness}%` : ''}
+                    ${device.type === 'fan' ? `· Speed: ${device.speed}%` : ''}
+                  </p>
+                </div>
+              </div>
+            `;
+          });
+        }
+        
+        html += `
+            </div>
+          </div>
+        `;
+      });
+      
+      roomListElement.innerHTML = html;
+    }
+    
+    // Load data when page loads
+    window.onload = fetchData;
+  </script>
+</body>
+</html>
